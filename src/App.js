@@ -6,6 +6,8 @@ import SignIn from './routes/signin';
 
 function App() {
   const token = localStorage.getItem('accessToken');
+  localStorage.setItem('session', false);
+
   if(!token) {
     return <SignIn />
   }
