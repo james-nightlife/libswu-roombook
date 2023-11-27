@@ -8,7 +8,7 @@ const server = 'http://10.1.217.219:5000';
 
 async function loginUser(credentials){
 
-    return fetch(server + '/api/login', {
+    return fetch(localhost + '/api/login', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
