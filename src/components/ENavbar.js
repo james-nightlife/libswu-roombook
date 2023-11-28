@@ -1,8 +1,7 @@
-import { Button, Container, Form, Navbar } from "react-bootstrap";
+import { Button, Container, Navbar } from "react-bootstrap";
 
-function ENavbar({token}){
-    const name = token['name'];
-    const buasri_id = token['buasri_id'];
+function ENavbar({user}){
+    const name = user['fname'] + ' ' + user['lname'];
 
     const handleLogout = () => {
         localStorage.removeItem("accessToken");
@@ -15,10 +14,10 @@ function ENavbar({token}){
         <>
             <Navbar>
                 <Container>
-                    <Navbar.Brand href="/">Lib</Navbar.Brand>
+                    <Navbar.Brand href="/">ระบบจองห้องค้นคว้าออนไลน์</Navbar.Brand>
                     <div className="d-flex">
-                        <div>{name}</div>
-                        <Button  variant="primary" type="button" onClick={handleLogout}>
+                        <div className="m-2">สวัสดี, {name}</div>
+                        <Button variant="primary" type="button" onClick={handleLogout}>
                             Sign Out
                         </Button>
                     </div> 

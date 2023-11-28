@@ -1,25 +1,23 @@
-import logo from '../logo.svg';
 import '../App.css';
-import { useState } from 'react';
+import { Button } from 'react-bootstrap';
 
 function Home() {
     return(
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                Edit <code>src/App.js</code> and save to reload.
-                </p>
-                <a
-                className="App-link"
-                href="https://reactjs.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                >
-                Learn React
-                </a>
-            </header>
-        </div>
+        <>
+            <div className='m-5'>
+                <Button>จองห้อง 506/1</Button>
+                <Button>จองห้อง 506/2</Button>
+                <Button>จองห้อง 506/3</Button>
+                <Button>จองห้อง 506/4</Button>
+                <Button>จองห้อง 506/5</Button>
+                <Button>จองห้อง 404</Button>
+                <Button>จองห้อง 405</Button>
+                <Button>จองห้อง 506</Button>
+                <Button>จองห้อง 605</Button>
+                <Button>จองห้อง 606</Button>
+                <Button>จองห้อง 505</Button>
+            </div>
+        </>
     );
 }
 export default Home;

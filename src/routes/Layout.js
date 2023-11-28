@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
 import ENavbar from "../components/ENavbar";
 
-function Layout({token}){
+function Layout({user}){
     return(
         <>
-            <ENavbar token={token} />
+            <ENavbar user={user} />
             <Outlet />
         </>
     );
