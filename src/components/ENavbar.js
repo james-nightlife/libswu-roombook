@@ -1,4 +1,5 @@
-import { Button, Container, Navbar } from "react-bootstrap";
+import { Button, Col, Container, Nav, Navbar, Row } from "react-bootstrap";
+import logo from './SWU_Central_Library_TH_Color.png'
 
 function ENavbar({user}){
     const name = user['fname'] + ' ' + user['lname'];
@@ -12,15 +13,25 @@ function ENavbar({user}){
 
     return(
         <>
-            <Navbar>
+            <Navbar expand="lg">
                 <Container>
-                    <Navbar.Brand href="/">ระบบจองห้องค้นคว้าออนไลน์</Navbar.Brand>
-                    <div className="d-flex">
-                        <div className="m-2">สวัสดี, {name}</div>
-                        <Button variant="primary" type="button" onClick={handleLogout}>
-                            Sign Out
-                        </Button>
-                    </div> 
+                    <Navbar.Brand href="https://lib.swu.ac.th">
+                        <img src={logo} height="100" />
+                    </Navbar.Brand>                   
+                    <Nav.Link href="/">
+                    ระบบจองห้องค้นคว้าออนไลน์
+                    </Nav.Link>
+                    <Navbar.Toggle aria-controls="navbarScroll" />
+                    <Navbar.Collapse className="justify-content-end">
+                        <Nav className="d-flex">
+                            <Navbar.Text>
+                            สวัสดี, {name}
+                            </Navbar.Text>
+                            <Nav.Link onClick={handleLogout}>
+                                    (ออกจากระบบ)
+                            </Nav.Link>
+                        </Nav> 
+                    </Navbar.Collapse>
                 </Container>
             </Navbar>
         </>
