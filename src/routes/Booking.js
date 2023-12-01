@@ -1,20 +1,24 @@
-import { Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import { useEffect, useState } from "react";
 import { AppointmentPicker } from "react-appointment-picker";
+import '../components/web.css';
+
 
 
 
 
 function Booking({user, room}){
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState(new Date(new Date().setHours(8,30,0,0)));
     const [guest, setGuest] = useState(['', '', '', '']);
+    const [select, setSelect] = useState('');
+    const [chance, setChance] = useState(1);
     
-
-    const db = { 'users' : [
+    /* จำลองฐานข้อมูลผู้ใช้ */
+    const db_users = { 'users' : [
         {'id': '62102010029', 'name': 'สุทธิพงศ์ กรรณิกากลาง'},
         {'id': '62102010175', 'name': 'ปรารถนา เขื่อนขวาวงศ์'},
         {'id': '62102010027', 'name': 'ธนาธิป ชนะศรี'},
@@ -23,76 +27,44 @@ function Booking({user, room}){
         {'id': '711721', 'name': 'สุทธิพงศ์ กรรณิกากลาง'},
     ]};
 
-    const timeslot = {'timeslot': [
-        {'id': '10001',},
-        {'id': '10001'},
-        {'id': '10001'},
-        {'id': '10001'},
-        {'id': '10001'},
-        {'id': '10001'},
-        {'id': '10001'},
-        {'id': '10001'},
-        {'id': '10001'},
-        {'id': '10001'},
+    /* จำลองฐานข้อมูลเวลาที่จองแล้ว */
+    const db_timeslot = {'timeslot': [
+        {'id': '10001', 'booktime': '2023-12-01 08:30:00', 'number': 1},
+        {'id': '10002', 'booktime': '2023-12-01 09:30:00', 'number': 2},
+        {'id': '10003', 'booktime': '2023-12-01 10:30:00', 'number': 3},
+        {'id': '10004', 'booktime': '2023-12-01 11:30:00', 'number': 4},
+        {'id': '10005', 'booktime': '2023-12-01 12:30:00', 'number': 5},
+        {'id': '10006', 'booktime': '2023-12-01 13:30:00', 'number': 6},
+        {'id': '10007', 'booktime': '2023-12-01 14:30:00', 'number': 7},
+        {'id': '10008', 'booktime': '2023-12-01 15:30:00', 'number': 8},
+        {'id': '10009', 'booktime': '2023-12-01 16:30:00', 'number': 9},
+        {'id': '10010', 'booktime': '2023-12-01 17:30:00', 'number': 10},
     ]}
 
-    const days = [
+    /* ตารางเวลา */
+    const def_days = [
         [
-          { id: 1, number: 1, isSelected: true, periods: 2 },
-          { id: 2, number: 2 },
-          null,
-          { id: 3, number: '3', isReserved: true },
-          { id: 4, number: '4' },
-          null,
-          { id: 5, number: 5 },
-          { id: 6, number: 6 }
-        ],
-        [
-          { id: 7, number: 1, isReserved: true, periods: 3 },
-          { id: 8, number: 2, isReserved: true },
-          null,
-          { id: 9, number: '3', isReserved: true },
-          { id: 10, number: '4' },
-          null,
-          { id: 11, number: 5 },
-          { id: 12, number: 6 }
-        ],
-        [
-          { id: 13, number: 1 },
-          { id: 14, number: 2 },
-          null,
-          { id: 15, number: 3, isReserved: true },
-          { id: 16, number: '4' },
-          null,
-          { id: 17, number: 5 },
-          { id: 18, number: 6 }
-        ],
-        [
-          { id: 19, number: 1 },
-          { id: 20, number: 2 },
-          null,
-          { id: 21, number: 3 },
-          { id: 22, number: '4' },
-          null,
-          { id: 23, number: 5 },
-          { id: 24, number: 6 }
-        ],
-        [
-          { id: 25, number: 1, isReserved: true },
-          { id: 26, number: 2 },
-          null,
-          { id: 27, number: '3', isReserved: true },
-          { id: 28, number: '4' },
-          null,
-          { id: 29, number: 5 },
-          { id: 30, number: 6, isReserved: true }
+          { id: 1, number: 1, periods: 4 },
+          { id: 2, number: 2, periods: 4 },
+          { id: 3, number: 3, periods: 4 },
+          { id: 4, number: 4, periods: 4 },
+          { id: 5, number: 5, periods: 4 },
+          { id: 6, number: 6, periods: 4 },
+          { id: 7, number: 7, periods: 4 },
+          { id: 8, number: 8, periods: 4 },
+          { id: 9, number: 9, periods: 4 },
+          { id: 10, number: 10, periods: 4 },
+          { id: 11, number: 11, periods: 4 },
+          { id: 12, number: 12, periods: 4 },
         ]
-      ];
+    ]
+    const [days, setDays] = useState(def_days);
     
+    /* แสดงชื่อจากรหัสบุคลากร / นิสิต */
     const handleGuest = async (e, idx) => {
-        const newGuest = [...guest];
+        const newGuest = [def_days];
         const id = e.target.value;
-        var result = db.users.find(x => x.id === id);
+        var result = db_users.users.find(x => x.id === id);
         if(result){
             newGuest[idx] = result.name;
         }else{
@@ -117,6 +89,7 @@ function Booking({user, room}){
                 `Added appointment ${number}, day ${day}, time ${time}, id ${id}`
         );
         addCb(day, number, time, id);
+        setSelect(time);
         setLoading(false);
     };
 
@@ -127,57 +100,81 @@ function Booking({user, room}){
             `Removed appointment ${number}, day ${day}, time ${time}, id ${id}`
         );
         removeCb(day, number);
+        setSelect();
         setLoading(false);
     }
 
     if(!room){
         window.location.href = "/";
     }
+
+    const handleTimeSlot = async (e) => {
+        var newDaysLocal = [...days];
+        setDate(new Date(e.setHours(8,30,0,0)));
+
+        for(var i = 0; i < db_timeslot.timeslot.length; i++){
+            if(newDaysLocal[0].find(x => x.number === db_timeslot.timeslot[i].number)){
+                newDaysLocal[0].find(x => x.number === db_timeslot.timeslot[i].number).isReserved = true;
+            }
+        }
+        setDays(newDaysLocal);
+    }
+
+
     return(
-        <Container className="p-5">
-            <Row className="mb-3">
-                <Col className="border p-3">
-                    <p>เลขประจำตัว : {user.id}</p>
-                    <p>ชื่อ : {user.fname} {user.lname}</p>
-                    <p>ส่วนงาน : {user.faculty}</p>
-                    <p>เลขห้อง : {room}</p>
-                    <p>ผู้ร่วมใช้ห้อง</p>
+        <Container className="px-5 py-3">
+            <Row>
+                <Col className="border p-3 mb-3">
+                    <Form.Label>เลขประจำตัวบุคลากร / นิสิต :</Form.Label>
+                    <Form.Control className="mb-3" type="text" disabled value={user.id} />
+                    <Form.Label>ชื่อ :</Form.Label>
+                    <Form.Control className="mb-3" type="text" disabled value={`${user.fname} ${user.lname}`} />
+                    <Form.Label>ส่วนงาน :</Form.Label>
+                    <Form.Control className="mb-3" type="text" disabled value={user.faculty} />
+                    <Form.Label>เลขห้อง :</Form.Label>
+                    <Form.Control className="mb-3" type="text" disabled value={room} />
+                    <Form.Label className="mb-3">ผู้ร่วมใช้ห้อง</Form.Label>
                     <Row>
-                        <Col><Form.Control type="text" placeholder="เลขประจำตัวบุคลากร / นิสิต" onChange={e => handleGuest(e, 0)} /></Col>
-                        <Col>{guest[0]}</Col>
+                        <Col sm className="mb-3"><Form.Control type="text" placeholder="เลขประจำตัวบุคลากร / นิสิต" onChange={e => handleGuest(e, 0)} /></Col>
+                        <Col sm className="mb-3"><Form.Control type="text" disabled value={guest[0]} /></Col>
                     </Row>
                     <Row>
-                        <Col><Form.Control type="text" placeholder="เลขประจำตัวบุคลากร / นิสิต" onChange={e => handleGuest(e, 1)}/></Col>
-                        <Col>{guest[1]}</Col>
+                        <Col sm className="mb-3"><Form.Control type="text" placeholder="เลขประจำตัวบุคลากร / นิสิต" onChange={e => handleGuest(e, 1)}/></Col>
+                        <Col sm className="mb-3"><Form.Control type="text" disabled value={guest[1]} /></Col>
                     </Row>
                     <Row>
-                        <Col><Form.Control type="text" placeholder="เลขประจำตัวบุคลากร / นิสิต" onChange={e => handleGuest(e, 2)} /></Col>
-                        <Col>{guest[2]}</Col>
+                        <Col sm className="mb-3"><Form.Control type="text" placeholder="เลขประจำตัวบุคลากร / นิสิต" onChange={e => handleGuest(e, 2)} /></Col>
+                        <Col sm className="mb-3"><Form.Control type="text" disabled value={guest[2]} /></Col>
                     </Row>
                     <Row>
-                        <Col><Form.Control type="text" placeholder="เลขประจำตัวบุคลากร / นิสิต" onChange={e => handleGuest(e, 3)} /></Col>
-                        <Col>{guest[3]}</Col>
+                        <Col sm className="mb-3"><Form.Control type="text" placeholder="เลขประจำตัวบุคลากร / นิสิต" onChange={e => handleGuest(e, 3)} /></Col>
+                        <Col sm className="mb-3"><Form.Control type="text" disabled value={guest[3]} /></Col>
                     </Row>
                 </Col>
-                <Col className="border p-3">
-                    <Calendar onChange={setDate} value={date} className="mb-3" />
-                    <p>สิทธิ์ในการจองห้องประจำวันที่ {date.getDate()}/{date.getMonth()}/{date.getFullYear()} :</p>
+                <Col className="border p-3 mb-3">
+                    <Calendar className="mb-3" onChange={e => handleTimeSlot(e)} value={date}  />
+                    <Form.Label>สิทธิ์ในการจองห้องประจำวันที่ {date.getDate()}/{date.getMonth()+1}/{date.getFullYear()} :</Form.Label>
+                    <Form.Control className="mb-3" type="text" disabled value={chance} />
                 </Col>
             </Row>
             <Row className="mb-3">
                 <Col className="border p-3">
-                    ตารางเวลา
+                    <Form.Label>ตารางเวลา :</Form.Label>
                     <AppointmentPicker 
                     addAppointmentCallback={addAppointmentCb}
                     removeAppointmentCallback={removeAppointmentCb}
                     initialDay={date}
                     days={days}
-                    maxReservableAppointments={3}
+                    maxReservableAppointments={1}
                     alpha
                     visible
-                    selectedByDefault
                     loading={loading}
                     />
+                <Form.Label className="mt-3">เวลาที่เลือก :</Form.Label>
+                <Form.Control className="mb-3" type="text" disabled defaultValue={select} />
+                <div className="d-grid gap-2">
+                    <Button type="submit" >จองห้อง</Button>
+                </div>
                 </Col>
             </Row>
         </Container>

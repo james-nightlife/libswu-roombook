@@ -58,28 +58,28 @@ function SignIn(){
                     window.location.href = '/';
                 })
             } else{
-                swal("Failed", response.message, "error");
+                swal("ล้มเหลว", response.message, "error");
             }
         }else{
-            swal("Failed", "โปรดระบุบัวศรีไอดีของคุณ", "error");
+            swal("ล้มเหลว", "โปรดระบุบัวศรีไอดีและรหัสผ่านของคุณ", "error");
         } 
     }
     
     return(
         <div className="m-5">
-            <h1 className="text-center mb-3">Sign In</h1>
+            <h1 className="text-center mb-3">ลงชื่อเข้าใช้ระบบจองห้องค้นคว้าออนไลน์</h1>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" onChange={e => setUsername(e.target.value)}>
-                    <Form.Label>Buasri ID</Form.Label>
-                    <Form.Control type="text" placeholder="Enter your Buasri ID" />
+                    <Form.Label>บัวศรีไอดี</Form.Label>
+                    <Form.Control type="text" placeholder="กรอกบัวศรีไอดีของคุณ" />
                 </Form.Group>
                 <Form.Group className="mb-3" onChange={e => setPassword(e.target.value)}>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Enter your password for Buasri ID" />
+                    <Form.Label>รหัสผ่าน</Form.Label>
+                    <Form.Control type="password" placeholder="กรอกรหัสผ่านของคุณ" />
                 </Form.Group>
                 <div className="d-grid mb-3">
                     <Button variant="primary" type="submit">
-                        Sign In
+                        ลงชื่อเข้าใช้
                     </Button>
                 </div> 
             </Form>
