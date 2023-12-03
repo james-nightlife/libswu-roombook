@@ -25,6 +25,7 @@ function Booking({user, room}){
         {'id': '61101010001', 'name': 'พัทธิ์ชนก รุ่งแจ้ง'},
         {'id': '62130010101', 'name': 'นิธินันท์ ลิ้มสุขนิรันดร์'},
         {'id': '711721', 'name': 'สุทธิพงศ์ กรรณิกากลาง'},
+        {'id': '62102010063', 'name': 'คุณัชญ์ ศิริสมบูรณ์เวช'},
     ]};
 
     /* จำลองฐานข้อมูลเวลาที่จองแล้ว */
@@ -62,7 +63,7 @@ function Booking({user, room}){
     
     /* แสดงชื่อจากรหัสบุคลากร / นิสิต */
     const handleGuest = async (e, idx) => {
-        const newGuest = [def_days];
+        const newGuest = [...guest];
         const id = e.target.value;
         var result = db_users.users.find(x => x.id === id);
         if(result){
