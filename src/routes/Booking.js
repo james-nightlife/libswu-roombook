@@ -11,6 +11,9 @@ import '../components/web.css';
 
 
 
+
+
+
 function Booking({user, room}){
     const [date, setDate] = useState(new Date(new Date().setHours(8,30,0,0)));
     const [guest, setGuest] = useState(['', '', '', '']);
@@ -74,10 +77,6 @@ function Booking({user, room}){
         setGuest(newGuest);
     }
 
-    useEffect(() => {
-
-    }, [guest])
-
     const [loading, setLoading] = useState(false);
 
     const  addAppointmentCb = async ({
@@ -120,6 +119,7 @@ function Booking({user, room}){
         }
         setDays(newDaysLocal);
     }
+    
 
 
     return(
