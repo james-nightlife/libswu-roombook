@@ -7,7 +7,7 @@ import Layout from './routes/Layout';
 import Booking from './routes/Booking';
 
 function App() {
-  var user = localStorage.getItem('user');
+  var user = sessionStorage.getItem('user');
   var room = localStorage.getItem('room');
 
   if(!user) {

@@ -53,8 +53,8 @@ function SignIn(){
                     buttons: false,
                     timer: 2000,
                 }).then((value) => {
-                    localStorage.setItem('accessToken', response['accessToken']);
-                    localStorage.setItem('user', JSON.stringify(response['user']));
+                    sessionStorage.setItem('accessToken', response['accessToken']);
+                    sessionStorage.setItem('user', JSON.stringify(response['user']));
                     window.location.href = '/';
                 })
             } else{
