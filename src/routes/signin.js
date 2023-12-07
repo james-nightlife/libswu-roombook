@@ -17,7 +17,7 @@ async function loginUser(credentials){
     */
    
     /* สำหรับทดสอบเว็บ */
-    if(credentials.username == credentials.password && credentials.username == "sc621010029"){
+    if(credentials.username === "sc621010029" && credentials.password === "62102010029"){
         return {'status' : 'ok',
                 'message' : 'ยินดีต้อนรับ สุทธิพงศ์ กรรณิกากลาง',
                 'user' : {
@@ -25,10 +25,24 @@ async function loginUser(credentials){
                     'fname' : 'สุทธิพงศ์',
                     'lname' : 'กรรณิกากลาง',
                     'buasri_id' : 'sc621010029',
-                    'faculty' : 'คณะวิทยาศาสตร์'
+                    'faculty' : 'คณะวิทยาศาสตร์',
+                    'status': 'visitor'
                 },
         }
-    }else{
+    }else if(credentials.username === "sutthiphong" && credentials.password === "711721"){
+        return {'status' : 'ok',
+                'message' : 'ยินดีต้อนรับ สุทธิพงศ์ กรรณิกากลาง',
+                'user' : {
+                    'id' : '711721',
+                    'fname' : 'สุทธิพงศ์',
+                    'lname' : 'กรรณิกากลาง',
+                    'buasri_id' : 'sutthiphong',
+                    'faculty' : 'สำนักหอสมุดกลาง',
+                    'status': 'admin'
+                },
+        }
+    }
+    else{
         return {'status': 'ok', 
                 'message': 'บัวศรีไอดีหรือรหัสผ่านไม่ถูกต้อง'
         }
