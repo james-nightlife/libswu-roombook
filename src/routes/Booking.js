@@ -7,13 +7,6 @@ import { useEffect, useState } from "react";
 import { AppointmentPicker } from "react-appointment-picker";
 import '../components/web.css';
 
-
-
-
-
-
-
-
 function Booking({user, room}){
     const [date, setDate] = useState(new Date(new Date().setHours(8,30,0,0)));
     const [guest, setGuest] = useState(['', '', '', '']);
