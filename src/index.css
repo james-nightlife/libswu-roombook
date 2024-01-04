@@ -11,3 +11,41 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#behindnavbar {
+  height: 170px;
+}
+
+ul[role=navigation] {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: row;
+  /*justify-content: space-between;*/
+  list-style-type: none;
+  padding: 0 5rem;
+}
+
+ul[role=navigation] li a {
+  border-radius: 7px;
+  padding: 0.1rem 1rem;
+  border: gray 1px solid;
+  cursor: pointer;
+}
+ul[role=navigation] li.previous a,
+ul[role=navigation] li.next a,
+ul[role=navigation] li.break a {
+  border-color: gray 1px solid;
+}
+ul[role=navigation] li.selected a {
+  background-color: #0366d6;
+  border-color: transparent;
+  color: white;
+  min-width: 32px;
+}
+ul[role=navigation] li.disabled a {
+  color: grey;
+}
+ul[role=navigation] li.disable,
+ul[role=navigation] li.disabled a {
+  cursor: default;
+}

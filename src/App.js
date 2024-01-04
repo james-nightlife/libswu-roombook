@@ -7,6 +7,9 @@ import Layout from './routes/Layout';
 import Booking from './routes/Booking';
 import BookingAdmin from './routes/Booking_Admin';
 import BookingCheck from './routes/Booking_Check';
+import UserManager from './routes/UserManager';
+import AdminAddUser from './routes/AdminAddUser';
+import AdminEditUser from './routes/AdminEditUser';
 
 function App() {
   var user = sessionStorage.getItem('user');
@@ -27,6 +30,9 @@ function App() {
           <Route path='/booking' element={<Booking user={user} room={room} />} />
           <Route path='/admin' element={<BookingAdmin />} />
           <Route path='/check' element={<BookingCheck />} />
+          <Route path='/admin/users' element={<UserManager />} />
+          <Route path='/admin/users/add' element={<AdminAddUser />} />
+          <Route path='/admin/users/edit' element={<AdminEditUser />} />
         </Route>
       </Routes>
     </BrowserRouter>
