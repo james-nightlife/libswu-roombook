@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-calendar/dist/Calendar.css';
 import { useEffect, useState } from "react";
 import '../components/web.css';
+import Swal from "sweetalert2";
 
 const countDailyBooking = async (input) => {
     return fetch('http://127.0.0.1:9000/check-daily-booking-count', {
@@ -16,10 +17,24 @@ const countDailyBooking = async (input) => {
         .catch((data) => (0))
 }
 
+async function submitBooking(input){
+    return fetch('http://127.0.0.1:9000/insert-book', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(input)
+    }).then((data) => (data.json()))
+    .catch((data) => ({
+        status: 'ok',
+        message: 'ระบบยืนยันตัวตนมีปัญหาขัดข้องทางเทคนิค ขออภัยในความไม่สะดวก'
+    }))
+}
+
 function Booking(){
     //
     const user = JSON.parse(sessionStorage.getItem('user'));
-    const room = localStorage.getItem('room');
+    const room = Number(localStorage.getItem('room'));
 
     // ดักการลักไก่เข้าหน้าจองห้องผ่าน Url
     if(!room){
@@ -95,6 +110,10 @@ function Booking(){
         }else{
             console.log(result.message)
             setEndTimeButton(false)
+            setInputs(values => ({
+                ...values,
+                 start_time: new Date(`${date} ${startTime}:00`),
+            }));
         }
     }
 
@@ -125,16 +144,23 @@ function Booking(){
         }else{
             console.log(result.message)
             setSubmitButton(false)
+            setInputs(values => ({
+                ...values,
+                 end_time: new Date(`${date} ${endTime}:00`),
+            }));
         }
     }
 
 
-    const [guest, setGuest] = useState(['', '', '', '']);
+    const [collaboratorName, setCollaboratorName] = useState(['', '', '', '']);
+    const [collaboratorUsername, setCollaboratorUsername] = useState(['', '', '', '']);
 
     /* แสดงชื่อจากรหัสบุคลากร / นิสิต */
     const handleGuest = async (e, idx) => {
-        const newGuest = [...guest];
+        const newCollaboratorName = [...collaboratorName];
+        const newCollaboratorUsername = [...collaboratorUsername];
         const id = e.target.value;
+
         var result = await fetch('http://127.0.0.1:9000/get-user', {
             method: "POST",
             headers: {
@@ -150,16 +176,79 @@ function Booking(){
             },
         }));
         if(result.user){
-            newGuest[idx] = result.user.name;
+            newCollaboratorName[idx] = result.user.name;
+            newCollaboratorUsername[idx] = result.user.username;
+
         }else{
-            newGuest[idx] = '';
+            newCollaboratorName[idx] = '';
+            newCollaboratorUsername[idx] = '';
         }
-        setGuest(newGuest);
+        setCollaboratorName(newCollaboratorName);
+        setCollaboratorUsername(newCollaboratorUsername);
+        
     }
+
+    const handleSubmit = async (e) => {
+        let response;
+        e.preventDefault();
+        if(inputs.collaborator &&
+            inputs.start_time &&
+            inputs.end_time){
+                Swal.fire({
+                    title: 'ยืนยันการจองห้อง',
+                    html: `ยืนยันการจองห้อง<br>
+                            ${inputs.collaborator} <br>
+                            ${inputs.start_time} <br>
+                            ${inputs.end_time} `,
+                    icon: 'warning',
+                    showCancelButton: true,
+                }).then(async confirm => {
+                    if(confirm.isConfirmed){
+                        response = await submitBooking({
+                            booker: user.username,
+                            room_id: room, 
+                            collaborator: inputs.collaborator,
+                            start_time: inputs.start_time,
+                            end_time: inputs.end_time,
+                        });
+                        if(response.status === '201'){
+                            Swal.fire({
+                                title: 'Success',
+                                text: response.message,
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 2000
+                            }).then(() => {
+                                window.location.href = '/';
+                            });
+                        }else{
+                            Swal.fire({
+                                title: 'ล้มเหลว',
+                                text: response.message,
+                                icon: 'error'
+                            });
+                        }
+
+                    }
+                })
+
+        }else{
+            Swal.fire({
+                title: 'ล้มเหลว',
+                text: 'โปรดระบุรายละเอียดการจองห้อง',
+                icon: 'error'
+            });
+        }
+    };
+
+    useEffect(() => {
+        setInputs(values => ({...values, collaborator: collaboratorUsername}));
+    }, [collaboratorName])
+
 
     return(
         <Container className="p-5">
-            <Form>
+            <Form onSubmit={handleSubmit}>
                 <Form.Group>
                     <Form.Label>บัวศรีไอดี :</Form.Label>
                     <Form.Control 
@@ -212,7 +301,7 @@ function Booking(){
                         className="mt-3"
                         type="text" 
                         disabled 
-                        value={guest[0]} />                    
+                        value={collaboratorName[0]} />                    
                 </Form.Group> 
                 <Form.Group>
                     <Form.Label className="mt-3">ผู้ร่วมใช้ห้องคนที่ 2</Form.Label>
@@ -226,7 +315,7 @@ function Booking(){
                         className="mt-3"
                         type="text" 
                         disabled 
-                        value={guest[1]} />
+                        value={collaboratorName[1]} />
                 </Form.Group>        
                 <Form.Group>
                     <Form.Label className="mt-3">ผู้ร่วมใช้ห้องคนที่ 3</Form.Label>
@@ -240,7 +329,7 @@ function Booking(){
                         className="mt-3" 
                         type="text" 
                         disabled 
-                        value={guest[2]} />
+                        value={collaboratorName[2]} />
                 </Form.Group>            
                 <Form.Group>
                     <Form.Label className="mt-3">ผู้ร่วมใช้ห้องคนที่ 4</Form.Label>
@@ -254,7 +343,7 @@ function Booking(){
                         className="mt-3" 
                         type="text" 
                         disabled 
-                        value={guest[3]} />
+                        value={collaboratorName[3]} />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label className="mt-3">วันที่</Form.Label>
@@ -287,7 +376,7 @@ function Booking(){
                         type="time"
                         name="start_time" 
                         onChange={e => setStartTime(e.target.value)}
-                        value={startTime}
+                        value={startTime || ''}
                         disabled={startTimeButton} />
                 </Form.Group>
                 <Form.Group>
@@ -297,7 +386,7 @@ function Booking(){
                     <Form.Control 
                         type="time" 
                         onChange={e => setEndTime(e.target.value)}
-                        value={endTime}
+                        value={endTime || ''}
                         disabled={endTimeButton} />
                 </Form.Group>
                 <div className="d-grid gap-2 mt-3">
