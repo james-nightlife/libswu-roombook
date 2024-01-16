@@ -1,59 +1,67 @@
-import { useState } from "react";
-import { Container } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Container, Table } from "react-bootstrap";
 import ReactPaginate from "react-paginate";
 
-const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+const BookingAdmin = () => {
+    const [data, setData] = useState([]);
+    const [raw, setRaw] = useState([]);
 
-const Items = ({currentItems}) => {
-    return(
-        <>
-        {currentItems && 
-        currentItems.map((item) => (
-            <div>
-                <h3>Item #{item}</h3>
-            </div>
-        ))}
-        </>
-    );
-}
-
-const PaginatedItems = ({itemsPerPage}) => {
-    const [itemOffset, setItemOffset] = useState(0);
-    const endOffset = itemOffset + itemsPerPage;
-    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-    const currentItems = items.slice(itemOffset, endOffset);
-    const pageCount = Math.ceil(items.length / itemsPerPage);
-
-    const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % items.length;
-        console.log(`User requested page number ${event.selected}, which is offset ${newOffset}`);
-        setItemOffset(newOffset);
+    const fetchData = async () => {
+        await fetch(`${process.env.REACT_APP_SERVER}/risks`, {
+            method: "GET",
+        }).then((data) => (data.json()))
+        .then(async (data) => {
+            await setRaw(data.data.sort((a, b) => b.id - a.id));
+        }).catch();
     }
 
-    return(
-        <>
-            <Items currentItems={currentItems} />
-            <ReactPaginate
-                breakLabel="..."
-                nextLabel='next >'
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={5}
-                pageCount={pageCount}
-                previousLabel="< previous"
-                renderOnZeroPageCount={null}
-            />
-        </>
-    )
-}
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-const BookingAdmin = () => {
+    useEffect(() => {
+        setData(raw);
+    }, [raw])
+
+    /* Pagination */
+    const itemsPerPage = 10;
+    const [itemOffset, setItemOffset] = useState(0);
+    const endOffset = itemOffset + itemsPerPage;
+    const currentItems = data.slice(itemOffset, endOffset);
+    const pageCount = Math.ceil(data.length / itemsPerPage);
+
+    const handlePageClick = (event) => {
+        const newOffset = (event.selected * itemsPerPage) % data.length;
+        setItemOffset(newOffset);
+    };
+
     return(
-        <>
             <Container>
-                <PaginatedItems itemsPerPage={4} />
+                <Table responsive className="mt-3">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>รายละเอียด</th>
+                            <th>สถานที่แจ้ง</th>
+                            <th>ผู้แจ้ง</th>
+                            <th>วันที่รายงาน</th>
+                            <th>สถานะการดำเนินการ</th>
+                            <th>จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {currentItems && currentItems.map((data, idx) => (               
+                            <tr key={idx}>  
+                                <td className="align-middle">{data.id}</td>
+                                <td className="align-middle">{data.detail}</td>
+                                <td className="align-middle">{data.location}</td>
+                                <td className="align-middle">{data.reporter}</td>
+                                <td className="align-middle">{data.status}</td>
+                            </tr> 
+                        ))}
+                    </tbody>
+                </Table>
             </Container>
-            
-        </>
     )
 };
 

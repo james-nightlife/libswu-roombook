@@ -125,7 +125,7 @@ function Booking(){
         }
     }, [endTime])
 
-    const handleEndTime = async () => {
+    const handleEndTime = async () => {        
         const result = await fetch('http://127.0.0.1:9000/check-booking', {
             method: "POST",
             headers: {
@@ -137,12 +137,12 @@ function Booking(){
         }).then((data) => data.json())
         .catch((data) => (0))
 
-        if(result.message === 'ทับซ้อน' && (endTime < startTime)){
-            console.log(result.message)
-            console.log(`${endTime} > ${startTime}`)
+        if(result.message === 'ทับซ้อน'){
+            setSubmitButton(true)
+        }else if(endTime <= startTime){
+            console.log(Date.parse(endTime));
             setSubmitButton(true)
         }else{
-            console.log(result.message)
             setSubmitButton(false)
             setInputs(values => ({
                 ...values,
