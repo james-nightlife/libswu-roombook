@@ -30,10 +30,9 @@ const SignIn = () => {
     }
 
     const handleSubmit = async e => {
-        let response;
         e.preventDefault();
         if(inputs.username && inputs.password){
-            response = await loginUser({
+            const response = await loginUser({
                 username: inputs.username,
                 password: inputs.password
             });
@@ -43,7 +42,8 @@ const SignIn = () => {
                     text: response.message,
                     icon: 'success',
                     showConfirmButton: false,
-                    timer: 2000
+                    timer: 2000,
+                    allowOutsideClick: false,
                 }).then(() => {
                     sessionStorage.setItem('user', JSON.stringify(response['user']));
                     window.location.href = '/';
