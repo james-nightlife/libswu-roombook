@@ -1,33 +1,30 @@
 import './App.css';
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
-import ErrorPage from './error-page';
-import Home from './routes/Home';
-import SignIn from './routes/SignIn';
-import Layout from './routes/Layout';
-import Booking from './routes/Booking';
-import BookingAdmin from './routes/Booking_Admin';
-import BookingCheck from './routes/Booking_Check';
-import UserManager from './routes/UserManager';
-import AdminAddUser from './routes/AdminAddUser';
-import AdminEditUser from './routes/AdminEditUser';
+import Error404 from './pages/Error404';
+import Home from './pages/Home';
+import SignIn from './pages/SignIn';
+import Layout from './pages/Layout';
+import Booking from './pages/Booking';
+import BookingAdmin from './pages/Booking_Admin';
+import BookingCheck from './pages/Booking_Check';
+import UserManager from './pages/UserManager';
+import AdminAddUser from './pages/AdminAddUser';
+import AdminEditUser from './pages/AdminEditUser';
 
 function App() {
-  var user = sessionStorage.getItem('user');
-  var room = localStorage.getItem('room');
+  var token = sessionStorage.getItem('username');
 
-  if(!user) {
+  if(!token) {
     return <SignIn />
-  }else{
-    user = JSON.parse(user);
   }
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Layout user={user} />}>
+        <Route path='/' element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path='*' element={<ErrorPage />} />
-          <Route path='/booking' element={<Booking user={user} room={room} />} />
+          <Route path='*' element={<Error404 />} />
+          <Route path='/booking' element={<Booking />} />
           <Route path='/admin' element={<BookingAdmin />} />
           <Route path='/check' element={<BookingCheck />} />
           <Route path='/admin/users' element={<UserManager />} />

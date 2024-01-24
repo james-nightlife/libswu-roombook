@@ -1,11 +1,10 @@
 import { Outlet } from "react-router-dom";
 import ENavbar from "../components/ENavbar";
 
-function Layout({user}){
+function Layout(){
     return(
         <>
-            <ENavbar user={user} />
-            <div id="behindnavbar" />
+            <ENavbar />
             <Outlet />
         </>
     );

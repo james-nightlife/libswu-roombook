@@ -3,11 +3,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import 'react-calendar/dist/Calendar.css';
 import { useEffect, useState } from "react";
-import '../components/web.css';
 import Swal from "sweetalert2";
 
 const countDailyBooking = async (input) => {
-    return fetch('http://127.0.0.1:9000/check-daily-booking-count', {
+    return fetch(`${process.env.REACT_APP_SERVER}/check-daily-booking-count`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -18,7 +17,7 @@ const countDailyBooking = async (input) => {
 }
 
 async function submitBooking(input){
-    return fetch('http://127.0.0.1:9000/insert-book', {
+    return fetch(`${process.env.REACT_APP_SERVER}/insert-book`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -33,21 +32,21 @@ async function submitBooking(input){
 
 function Booking(){
     //
-    const user = JSON.parse(sessionStorage.getItem('user'));
+    const [inputs, setInputs] = useState({});
+
+    const handleChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setInputs(values => ({...values, [name]: value}));
+    }
+
+    //
+    const username = sessionStorage.getItem('username');
     const room = Number(localStorage.getItem('room'));
 
     // ดักการลักไก่เข้าหน้าจองห้องผ่าน Url
     if(!room){
         window.location.href = "/";
-    }
-
-    //
-    const [inputs, setInputs] = useState({});
-    
-    const handleChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        setInputs(values => ({...values, [name]: value}));
     }
 
     const today = new Date();
@@ -61,7 +60,7 @@ function Booking(){
 
     const handleDate = async () => {
         const result = await countDailyBooking({
-            username: user.username,
+            username: username,
             date: date,
         })
         setDailyCount(1 - result.count)
@@ -94,7 +93,7 @@ function Booking(){
     }, [startTime])
 
     const handleStartTime = async () => {
-        const result = await fetch('http://127.0.0.1:9000/check-booking', {
+        const result = await fetch(`${process.env.REACT_APP_SERVER}/check-booking`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -126,7 +125,7 @@ function Booking(){
     }, [endTime])
 
     const handleEndTime = async () => {        
-        const result = await fetch('http://127.0.0.1:9000/check-booking', {
+        const result = await fetch(`${process.env.REACT_APP_SERVER}/check-booking`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -161,7 +160,7 @@ function Booking(){
         const newCollaboratorUsername = [...collaboratorUsername];
         const id = e.target.value;
 
-        var result = await fetch('http://127.0.0.1:9000/get-user', {
+        var result = await fetch(`${process.env.REACT_APP_SERVER}/get-user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -205,7 +204,7 @@ function Booking(){
                 }).then(async confirm => {
                     if(confirm.isConfirmed){
                         response = await submitBooking({
-                            booker: user.username,
+                            booker: username,
                             room_id: room, 
                             collaborator: inputs.collaborator,
                             start_time: inputs.start_time,
@@ -255,8 +254,9 @@ function Booking(){
                         type="text"
                         name="username" 
                         disabled 
-                        value={user.username} />
+                        value={username} />
                 </Form.Group>
+                {/*
                 <Form.Group>
                     <Form.Label className="pt-3">เลขประจำตัวบุคลากร / นิสิต :</Form.Label>
                     <Form.Control 
@@ -265,6 +265,8 @@ function Booking(){
                         disabled 
                         value={user.uni_id} />
                 </Form.Group>
+                */}
+                {/*
                 <Form.Group>
                     <Form.Label className="pt-3">ชื่อ :</Form.Label>
                     <Form.Control 
@@ -273,6 +275,8 @@ function Booking(){
                         disabled 
                         value={user.name} />
                 </Form.Group>
+                */}
+                {/*
                 <Form.Group>
                     <Form.Label className="mt-3">ส่วนงาน :</Form.Label>
                     <Form.Control 
@@ -281,6 +285,7 @@ function Booking(){
                         disabled 
                         value={user.faculty} />
                 </Form.Group>
+                */}
                 <Form.Group>
                     <Form.Label className="mt-3">เลขห้อง :</Form.Label>
                     <Form.Control 

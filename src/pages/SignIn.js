@@ -1,24 +1,10 @@
 import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Container, Form } from "react-bootstrap";
-import logo from '../components/SWU_Central_Library_TH_Color.png';
+import logo from '../images/SWU_Central_Library_TH_Color.png';
 import Swal from "sweetalert2";
-
-/* รับ username และ password ส่งให้ api ตรวจสอบบัญชีผู้ใช้ */
-async function loginUser(credentials){
-    return fetch('http://127.0.0.1:9000/auth', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(credentials)
-    }).then((data) => (data.json()))
-    .catch((data) => (({
-        'status': 'ok',
-        'message': 'ระบบยืนยันตัวตนมีปัญหาขัดข้องทางเทคนิค ขออภัยในความไม่สะดวก'
-    })))
-}
-
+import { FailAlert } from "../alert/FailAlert";
+import { SignInRequest } from "../requests/SignInRequest";
 
 const SignIn = () => {
     const [inputs, setInputs] = useState({});
@@ -32,11 +18,11 @@ const SignIn = () => {
     const handleSubmit = async e => {
         e.preventDefault();
         if(inputs.username && inputs.password){
-            const response = await loginUser({
+            const response = await SignInRequest({
                 username: inputs.username,
                 password: inputs.password
             });
-            if("user" in response){
+            if(response.status === 200){
                 Swal.fire({
                     title: 'สำเร็จ',
                     text: response.message,
@@ -45,22 +31,16 @@ const SignIn = () => {
                     timer: 2000,
                     allowOutsideClick: false,
                 }).then(() => {
-                    sessionStorage.setItem('user', JSON.stringify(response['user']));
+                    sessionStorage.setItem('username', response.payload.user.username);
+                    sessionStorage.setItem('role', response.role);
+                    sessionStorage.setItem('name', response.fullname);
                     window.location.href = '/';
                 })
             }else{
-                Swal.fire({
-                    title: 'ล้มเหลว',
-                    text: response.message,
-                    icon: 'error'
-                })
+                FailAlert(response.message);   
             }
         }else{
-            Swal.fire({
-                title: 'ล้มเหลว',
-                text: 'โปรดระบุบัวศรีไอดีและรหัสผ่านของคุณ',
-                icon: 'error'
-            })
+            FailAlert('โปรดระบุบัวศรีไอดีและรหัสผ่านของคุณ');
         } 
     }
     
