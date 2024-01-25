@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-calendar/dist/Calendar.css';
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import BookingForm from "../forms/BookingForm";
 
 const countDailyBooking = async (input) => {
     return fetch(`${process.env.REACT_APP_SERVER}/check-daily-booking-count`, {
@@ -31,7 +32,9 @@ async function submitBooking(input){
 }
 
 function Booking(){
-    //
+    // TITLE
+
+    // FORM
     const [inputs, setInputs] = useState({});
 
     const handleChange = (e) => {
@@ -40,9 +43,10 @@ function Booking(){
         setInputs(values => ({...values, [name]: value}));
     }
 
-    //
+    // SUBMIT BUTTON
     const username = sessionStorage.getItem('username');
     const room = Number(localStorage.getItem('room'));
+
 
     // ดักการลักไก่เข้าหน้าจองห้องผ่าน Url
     if(!room){
@@ -70,6 +74,8 @@ function Booking(){
     const [endTimeButton, setEndTimeButton] = useState(true);
     const [submitButton, setSubmitButton] = useState(true);
     
+
+
     useEffect(() => {
         if(dailyCount === 0){
             setStartTimeButton(true)
@@ -249,50 +255,20 @@ function Booking(){
         <Container className="p-5">
             <Form onSubmit={handleSubmit}>
                 <Form.Group>
-                    <Form.Label>บัวศรีไอดี :</Form.Label>
+                    <Form.Label>บัวศรีไอดีผู้จองห้อง</Form.Label>
                     <Form.Control 
                         type="text"
                         name="username" 
                         disabled 
-                        value={username} />
+                        value={username || ''} />
                 </Form.Group>
-                {/*
                 <Form.Group>
-                    <Form.Label className="pt-3">เลขประจำตัวบุคลากร / นิสิต :</Form.Label>
-                    <Form.Control 
-                        type="text"
-                        name="uni_id" 
-                        disabled 
-                        value={user.uni_id} />
-                </Form.Group>
-                */}
-                {/*
-                <Form.Group>
-                    <Form.Label className="pt-3">ชื่อ :</Form.Label>
-                    <Form.Control 
-                        type="text" 
-                        name="name"
-                        disabled 
-                        value={user.name} />
-                </Form.Group>
-                */}
-                {/*
-                <Form.Group>
-                    <Form.Label className="mt-3">ส่วนงาน :</Form.Label>
-                    <Form.Control 
-                        type="text" 
-                        name="faculty"
-                        disabled 
-                        value={user.faculty} />
-                </Form.Group>
-                */}
-                <Form.Group>
-                    <Form.Label className="mt-3">เลขห้อง :</Form.Label>
+                    <Form.Label className="mt-3">เลขห้อง</Form.Label>
                     <Form.Control 
                         type="text" 
                         name="room_id"
                         disabled 
-                        value={room} />
+                        value={room || ''} />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label className="mt-3">ผู้ร่วมใช้ห้องคนที่ 1</Form.Label>
@@ -306,7 +282,7 @@ function Booking(){
                         className="mt-3"
                         type="text" 
                         disabled 
-                        value={collaboratorName[0]} />                    
+                        value={collaboratorName[0] || ''} />                    
                 </Form.Group> 
                 <Form.Group>
                     <Form.Label className="mt-3">ผู้ร่วมใช้ห้องคนที่ 2</Form.Label>
@@ -320,7 +296,7 @@ function Booking(){
                         className="mt-3"
                         type="text" 
                         disabled 
-                        value={collaboratorName[1]} />
+                        value={collaboratorName[1] || ''} />
                 </Form.Group>        
                 <Form.Group>
                     <Form.Label className="mt-3">ผู้ร่วมใช้ห้องคนที่ 3</Form.Label>
@@ -334,7 +310,7 @@ function Booking(){
                         className="mt-3" 
                         type="text" 
                         disabled 
-                        value={collaboratorName[2]} />
+                        value={collaboratorName[2] || ''} />
                 </Form.Group>            
                 <Form.Group>
                     <Form.Label className="mt-3">ผู้ร่วมใช้ห้องคนที่ 4</Form.Label>
@@ -348,7 +324,7 @@ function Booking(){
                         className="mt-3" 
                         type="text" 
                         disabled 
-                        value={collaboratorName[3]} />
+                        value={collaboratorName[3] || ''} />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label className="mt-3">วันที่</Form.Label>
@@ -356,13 +332,7 @@ function Booking(){
                         type="date"
                         onChange={e => setDate(e.target.value)}
                         min={today_date}
-                        value={date} />
-                    {/* 
-                        <Calendar 
-                            onChange={e => handleTimeSlot(e)} 
-                            value={date}
-                          />
-                    */}
+                        value={date || ''} />
                 </Form.Group>
                 <Form.Group>
                             <Form.Label className="pt-3">
@@ -371,7 +341,7 @@ function Booking(){
                             <Form.Control 
                                 type="text" 
                                 disabled 
-                                value={dailyCount} />
+                                value={dailyCount || ''} />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>
@@ -395,13 +365,32 @@ function Booking(){
                         disabled={endTimeButton} />
                 </Form.Group>
                 <div className="d-grid gap-2 mt-3">
-                    <Button 
+                <Button 
                         type="submit"
                         disabled={submitButton}>
                             จองห้อง
                 </Button>
                 </div>
             </Form>
+            {/*
+            <BookingForm 
+                handleSubmit={handleSubmit} 
+                username={username}
+                room={room} 
+                handleGuest={handleGuest} 
+                collaboratorName={collaboratorName}
+                setDate={setDate} 
+                today_date={today_date} 
+                date={date} 
+                dailyCount={dailyCount}
+                setStartTime={setStartTime}
+                startTime={startTime} 
+                startTimeButton={startTimeButton}
+                setEndTime={setEndTime} 
+                endTime={endTime}
+                endTimeButton={endTimeButton}
+                submitButton={submitButton} />
+                 */}
         </Container>
     )
 }
