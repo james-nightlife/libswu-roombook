@@ -1,0 +1,15 @@
+{
+  "name": "libswu-roombook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install": "cd frontend && npm install && cd ../server && npm install",
+    "start": "npm run server",
+    "server": "cd server && npx nodemon --env-file=.env server.js",
+    "frontend": "cd frontend && npm start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
