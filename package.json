@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install": "cd frontend && npm install && cd ../server && npm install",
-    "start": "npm run server",
-    "server": "cd server && npx nodemon --env-file=.env server.js",
+    "install": "cd frontend && npm install && cd ../backend && npm install",
+    "start": "npm run backend",
+    "backend": "cd backend && npx nodemon --env-file=.env server.js",
     "frontend": "cd frontend && npm start"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^6.3.0"
+  }
 }

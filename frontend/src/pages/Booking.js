@@ -44,6 +44,10 @@ function Booking(){
     }
 
     // SUBMIT BUTTON
+    const [startTimeButton, setStartTimeButton] = useState(true);
+    const [endTimeButton, setEndTimeButton] = useState(true);
+    const [submitButton, setSubmitButton] = useState(true);
+
     const username = sessionStorage.getItem('username');
     const room = Number(localStorage.getItem('room'));
 
@@ -69,12 +73,6 @@ function Booking(){
         })
         setDailyCount(1 - result.count)
     }
-
-    const [startTimeButton, setStartTimeButton] = useState(true);
-    const [endTimeButton, setEndTimeButton] = useState(true);
-    const [submitButton, setSubmitButton] = useState(true);
-    
-
 
     useEffect(() => {
         if(dailyCount === 0){
@@ -109,6 +107,7 @@ function Booking(){
             })
         }).then((data) => data.json())
         .catch((data) => (0))
+        
         if(result.message === 'ทับซ้อน'){
             console.log(result.message)
             setEndTimeButton(true)
