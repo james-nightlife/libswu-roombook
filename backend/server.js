@@ -152,3 +152,4 @@ app.post('/check-daily-booking-count', async (req, res, next) => {
         });
     }
 })
+

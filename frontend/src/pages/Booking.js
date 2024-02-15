@@ -251,8 +251,10 @@ function Booking(){
 
 
     return(
-        <Container className="p-5">
-            <Form onSubmit={handleSubmit}>
+        <Container className="p-3">
+            <Container className="p-3 border rounded">
+                <h1 className="text-center">บันทึกการจองห้อง</h1>
+                <Form onSubmit={handleSubmit}>
                 <Form.Group>
                     <Form.Label>บัวศรีไอดีผู้จองห้อง</Form.Label>
                     <Form.Control 
@@ -371,6 +373,11 @@ function Booking(){
                 </Button>
                 </div>
             </Form>
+            </Container>
+
+
+
+            
             {/*
             <BookingForm 
                 handleSubmit={handleSubmit} 
